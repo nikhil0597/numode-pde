@@ -1,0 +1,4 @@
+Saved file  sol.txt
+Saved file  exact.txt
+No. of cells, Global error
+256 6.639062050117772e-09
