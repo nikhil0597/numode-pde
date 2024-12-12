@@ -1,17 +1,26 @@
-## This code is written for u_t+ f(u)_x = 0, to generate First order FVM and Second order minimod+ssprk22 scheme 
-To run first order scheme enter the following
+## This code is to approximate solutions to IVPs for ODEs
+To run Euler method, enter the following code on your command line
 
 ```
-python clw.py -pde linear -ic smooth -nc 50 -time_scheme euler -limit no
+python3 ode.py -time_scheme euler 
 ```
-To run the second order scheme, MUSCL with ssprk22 scheme enter the following
+To run the RK-2 method, use:
 ```
-python clw.py -pde linear -ic smooth -nc 50 -time_scheme ssprk22 -limit mmod -Tf 4 -cfl 0.5
+python3 ode.py -time_scheme rk2 
 ```
+
+To run the RK-4 method, use:
+```
+python3 ode.py -time_scheme rk4 
+```
+
+You could specify the number of cells(nc), the start time(tmin), end time(tmax) and the initial datum given at tmin as follows:
+```  
+python3 ode.py -nc 8 -tmin 0.0 -tmax 1.6 -time_scheme rk4 -uinit 2.0 -compute_error yes
+```
+
 ## To test the order of accuracy, run the script file
 ```
 sh runconvergence "20 40 80 160 320 640"
-python plotrate.py
 ```
-Order of accuracy test works for both advection and burger equation with periodic bc
-For discontinuous flux use the -pde dflux
+
