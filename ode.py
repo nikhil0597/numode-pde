@@ -10,7 +10,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-tmin', type=float, help='starting time', default=-1.0)
 parser.add_argument('-tmax', type=float, help='final time', default=1.0)
-parser.add_argument('-uinit', type=float, help='initial datum', default=2.0)
+parser.add_argument('-yinit', type=float, help='initial datum', default=2.0)
 parser.add_argument('-nc', type=int, help='Number of cells', default=100)
 parser.add_argument('-compute_error', choices=('no','yes'),
                     help='Compute error norm', default='no')
@@ -24,7 +24,7 @@ args = parser.parse_args()
 # constants
 nc    = args.nc
 time_scheme = args.time_scheme
-uinit=  args.uinit
+yinit=  args.yinit
 tmin, tmax = args.tmin, args.tmax
 dt = (tmax - tmin)/ nc             # Step size based on number of cells
 
@@ -32,14 +32,14 @@ def f(t, y): # RHS of the ODE
     #return np.cos(t)  
     return (y**2) - (((t**4)-6*(t**3)+12*(t**2)-(14*t)+9)/((1+t)**2))
 
-def uexact(t,uinit):
+def uexact(t,yinit):
     #return np.sin(t)  #exact solution
     return (1-t)*(2-t)/(1+t)
 
 #Error computation
-def compute_error(u1,exact,f, tmin, tmax,uinit, time_scheme):
+def compute_error(u1,exact,f, tmin, tmax,yinit, time_scheme):
     glob_err = 0.0
-    glob_err = np.abs(u1[-1]-exact(tmax,uinit))
+    glob_err = np.abs(u1[-1]-exact(tmax,yinit))
     return glob_err
 
 def euler_method(f, y0, tmin, tmax, nc):                 
@@ -100,11 +100,11 @@ def rk4(f, y0, tmin, tmax, nc):
     return t_values, y_values
 
 time_schemes = {'euler': euler_method, 'rk2' : rk2, 'rk4' : rk4 }
-t_values, y_values = time_schemes[time_scheme](f, uinit, tmin, tmax, nc)
+t_values, y_values = time_schemes[time_scheme](f, yinit, tmin, tmax, nc)
 
 #to plot the exact solution
 te = np.linspace(t_values[0], t_values[-1], 10000)
-exact_values = uexact(te, uinit)
+exact_values = uexact(te, yinit)
 
 # Plot the solution
 if args.plot == 'yes':
@@ -130,7 +130,7 @@ np.savetxt(fname, np.column_stack([te, exact_values]))
 print('Saved file ', fname)
 
 if args.compute_error == 'yes':
-    er1 = compute_error(y_values,uexact,f, tmin, tmax, uinit, time_scheme)
+    er1 = compute_error(y_values,uexact,f, tmin, tmax, yinit, time_scheme)
     print('No. of cells, Global error')
     print(nc, er1)
 
